@@ -6,18 +6,28 @@ const criarMultiplicador = (fator: number): ((valor: number) => number) => {
         return valor * fator;
     };
 };
+const aplicarTaxa = (percentual: number): ((valor: number) => number) => {
+    return (valor: number): number => {
+        return valor + (valor * percentual / 100);
+    };
+};
+
 const aplicarDesconto = (valor: number, desconto: number): number => {
     return valor - desconto;
 };
-export { valorDoIngresso, criarMultiplicador, aplicarDesconto };
+export { valorDoIngresso, criarMultiplicador, aplicarDesconto, aplicarTaxa };
 
 const montarIngresso = (precoBase: number, pessoas: number, temDireitoAMeia: boolean): number => {
     const taxaDeServico = 5; // Valor fixo da taxa de serviço
-    let precoTotal = valorDoIngresso(precoBase, taxaDeServico);
+    const precoTotal = valorDoIngresso(precoBase, taxaDeServico);
 
     if (temDireitoAMeia) {
-        precoTotal = aplicarDesconto(precoTotal, precoTotal / 2);
+        const desconto = aplicarDesconto(precoTotal, precoTotal / 2);
     }
 
     return precoTotal * pessoas;
+};
+const calcularPrecoTotal = (precoBase: number, pessoas: number, temDireitoAMeia: boolean): number => {
+    const precoTotal = montarIngresso(precoBase, pessoas, temDireitoAMeia);
+    return precoTotal;
 };
