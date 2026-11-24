@@ -1,0 +1,46 @@
+name: Testes da bilheteria
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Configurar o Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '26'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes e publicar a pontuação
+        shell: bash
+        run: |
+          relatorio="$RUNNER_TEMP/testes-bilheteria.txt"
+          npm test | tee "$relatorio"
+
+          pontuacao="$(grep '^Pontos: ' "$relatorio" | tail -n 1)"
+          printf '### Resultado dos testes\n\n%s\n' "$pontuacao" >> "$GITHUB_STEP_SUMMARY"
+
+          # O corretor retorna 0 mesmo quando há testes reprovados.
+          if [[ ! "$pontuacao" =~ ^Pontos:\ ([0-9]+)\ de\ ([0-9]+)\ \(100%\)$ ]] ||
+             [[ "${BASH_REMATCH[1]}" != "${BASH_REMATCH[2]}" ]]; then
+            echo "::error::A suíte ainda não atingiu a pontuação máxima."
+            exit 1
+          fi
