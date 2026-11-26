@@ -50,6 +50,12 @@ curl -X POST localhost:3000/reservas -H 'Content-Type: application/json' \
    `await` perigoso?
 2. **OO.** O que o `Evento` esconde e por quê? Por que o `reservar` é tudo ou nada? Por que os erros são uma hierarquia de classes?
 3. **Funcional.** O que ganhamos com `preco.ts` puro? Como vocês testariam ele sem subir o servidor?
+
+   Podemos calcular preços sem alterar os dados do pedido e sem depender do servidor ou da operadora de pagamento.
+   Com o mesmo preço, as mesmas pessoas e a mesma regra de meia, o resultado é previsível. Para testar, importamos as
+   funções e passamos dados conhecidos. Por exemplo, para um preço base de R$ 100, uma regra que concede meia a
+   apenas uma das duas pessoas deve produzir ingressos de R$ 50 e R$ 100 e um total de R$ 165 com a taxa.
+
 4. **Se fosse em outro paradigma.** Escolham uma das partes e expliquem como ficaria em outro
    paradigma, e se ficaria melhor ou pior.
 5. **Concorrente × paralelo.** O Node roda o JavaScript numa linha só: os pedidos de vocês são
@@ -59,9 +65,14 @@ curl -X POST localhost:3000/reservas -H 'Content-Type: application/json' \
 
 | Cenário | Pedidos | Tempo (ms) | Vendidos | Poltrona ocupada | Falha de pagamento |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| Padrão (`main.ts`) | 200 | | | | |
+| Padrão (`main.ts`) | 200 | 863 | 99 | 89 | 12 |
 
 O bench ocupa as poltronas do evento 1: para rodar de novo, parem o `npm start` (Ctrl+C) e subam outra
 vez.
 
 O que os números mostram:
+
+Na execução local com as branches de preço, domínio e concorrência integradas, 99 das 100 poltronas do evento 1
+foram vendidas. Os 89 retornos HTTP 409 indicam que a poltrona pedida já estava ocupada ou reservada no momento
+da tentativa. Os 12 retornos HTTP 502 indicam falhas do pagamento simulado, que devolvem a poltrona para a venda.
+Como as falhas são aleatórias, as contagens e o tempo podem variar a cada execução.
