@@ -77,8 +77,13 @@ curl -X POST localhost:3000/reservas -H 'Content-Type: application/json' \
 
 | Cenário | Pedidos | Tempo (ms) | Vendidos | Poltrona ocupada | Falha de pagamento |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| Padrão (`main.ts`) | 200 | | | | |
+| Padrão (`main.ts`) | 200 | 863 | 99 | 89 | 12 |
 
 O bench ocupa as poltronas do evento 1: para rodar de novo, parem o `npm start` (Ctrl+C) e subam outra vez.
 
 O que os números mostram:
+
+Na execução local com as branches de preço, domínio e concorrência integradas, 99 das 100 poltronas do evento 1
+foram vendidas. Os 89 retornos HTTP 409 indicam que a poltrona pedida já estava ocupada ou reservada no momento
+da tentativa. Os 12 retornos HTTP 502 indicam falhas do pagamento simulado, que devolvem a poltrona para a venda.
+Como as falhas são aleatórias, as contagens e o tempo podem variar a cada execução.
