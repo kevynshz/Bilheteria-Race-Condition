@@ -1,33 +1,43 @@
-const valorDoIngresso = (precoBase: number, taxaDeServico: number): number => {
-    return precoBase + taxaDeServico;
-};
-const criarMultiplicador = (fator: number): ((valor: number) => number) => {
-    return (valor: number): number => {
-        return valor * fator;
+import type { Ingresso, Pessoa, TipoIngresso } from "./tipos.ts";
+
+export const valorDoIngresso = (precoBase: number): ((tipo: TipoIngresso) => number) => {
+    return (tipo) => {
+        if (tipo === "inteira") {
+            return precoBase;
+        }
+
+        const meia = precoBase / 2;
+        return Math.round(meia * 100) / 100;
     };
 };
-const aplicarTaxa = (percentual: number): ((valor: number) => number) => {
-    return (valor: number): number => {
-        return valor + (valor * percentual / 100);
+
+export const aplicarTaxa = (percentual: number): ((valor: number) => number) => {
+    return (valor) => {
+        const valorComTaxa = valor * (1 + percentual);
+        return Math.round(valorComTaxa * 100) / 100;
     };
 };
 
-const aplicarDesconto = (valor: number, desconto: number): number => {
-    return valor - desconto;
+export const montarIngressos = (
+    precoBase: number,
+    pessoas: readonly Pessoa[],
+    temDireitoAMeia: (pessoa: Pessoa) => boolean,
+): Ingresso[] => {
+    const calcularValor = valorDoIngresso(precoBase);
+
+    return pessoas.map((pessoa) => {
+        const tipo = temDireitoAMeia(pessoa) ? "meia" : "inteira";
+
+        return {
+            nome: pessoa.nome,
+            poltrona: pessoa.poltrona,
+            tipo,
+            valor: calcularValor(tipo),
+        };
+    });
 };
-export { valorDoIngresso, criarMultiplicador, aplicarDesconto, aplicarTaxa };
 
-const montarIngresso = (precoBase: number, pessoas: number, temDireitoAMeia: boolean): number => {
-    const taxaDeServico = 5; // Valor fixo da taxa de serviço
-    const precoTotal = valorDoIngresso(precoBase, taxaDeServico);
-
-    if (temDireitoAMeia) {
-        const desconto = aplicarDesconto(precoTotal, precoTotal / 2);
-    }
-
-    return precoTotal * pessoas;
-};
-const calcularPrecoTotal = (precoBase: number, pessoas: number, temDireitoAMeia: boolean): number => {
-    const precoTotal = montarIngresso(precoBase, pessoas, temDireitoAMeia);
-    return precoTotal;
+export const calcularTotal = (ingressos: readonly Ingresso[]): number => {
+    const subtotal = ingressos.reduce((soma, ingresso) => soma + ingresso.valor, 0);
+    return aplicarTaxa(0.1)(subtotal);
 };
