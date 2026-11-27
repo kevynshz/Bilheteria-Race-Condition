@@ -73,7 +73,9 @@ A hierarquia de erros utiliza a herança para centralizar o tratamento de exceç
 
 **O que ganhamos com `preco.ts` puro? Como vocês testariam ele sem subir o servidor?**
 
-**Resposta:** A preencher.
+**Resposta:** Com as funções puras de preco.ts, o cálculo é previsível. Para os mesmos dados e a mesma regra de meia-entrada, o resultado é sempre o mesmo, e os dados do pedido são preservados. Isso facilita testar o cálculo de forma isolada, sem iniciar o servidor ou chamar a operadora de pagamento.
+
+Para testar, importaríamos montarIngressos e calcularTotal e passaríamos duas pessoas com um preço base de R$ 100 e uma regra que dá meia-entrada a apenas uma delas. Conferiríamos se os ingressos saem na mesma ordem, com as poltronas escolhidas e os valores de R$ 50 e R$ 100. Por fim, verificaríamos se o total é R$ 165 após aplicar a taxa de 10%.
 
 ### 4. Se fosse em outro paradigma
 
@@ -146,3 +148,101 @@ Ao final da segunda execução, o evento apresentou o seguinte estado:
 As 13 poltronas disponíveis são consistentes com as 13 falhas de pagamento registradas nessa execução, demonstrando o funcionamento do rollback.
 
 Os resultados das duas execuções são consistentes com o respeito à capacidade máxima do evento. As diferenças de tempo e distribuição dos retornos podem ocorrer devido ao escalonamento dos pedidos, às condições do ambiente de execução e à natureza aleatória do pagamento simulado.
+
+---
+
+## Interface web — Sessão B
+
+Como funcionalidade adicional, foi desenvolvida uma interface web
+de venda de ingressos denominada Sessão B, utilizando HTML, CSS,
+JavaScript, TypeScript e Node.js.
+
+A interface apresenta três shows fictícios:
+
+- Lana Del Rey — Blue Velvet Night.
+- Adele — An Evening with Adele.
+- Taylor Swift — Midnight Stories.
+
+### Funcionalidades
+
+- Interface responsiva inspirada em plataformas de venda de ingressos.
+- Catálogo de eventos com imagens, datas, horários e preços.
+- Minimapa interativo de poltronas.
+- Identificação visual de assentos livres, selecionados e indisponíveis.
+- Atualização automática da disponibilidade a cada dois segundos.
+- Sincronização das reservas entre diferentes clientes.
+- Seleção de múltiplos ingressos em um único pedido.
+- Cálculo estimado de meia-entrada e taxa de serviço.
+- Exibição de comprovantes e respostas HTTP.
+- Simulação de pedidos concorrentes para uma mesma poltrona.
+- Liberação de poltronas após falhas de pagamento.
+
+### Estrutura da interface
+
+| Arquivo | Responsabilidade |
+| :--- | :--- |
+| `interface/index.html` | Estrutura, estilização e lógica da interface |
+| `interface/servidor.cjs` | Servidor web e comunicação com o backend |
+| `interface/backend.ts` | Inicialização do backend com consulta de assentos |
+| `interface/assets/` | Imagens utilizadas nos eventos |
+
+### Executando a interface
+
+Instale as dependências, caso necessário:
+
+```bash
+npm install
+```
+
+No primeiro terminal, inicie o backend com suporte ao minimapa:
+
+```bash
+npx tsx interface/backend.ts
+```
+
+No segundo terminal, inicie o servidor da interface:
+
+```bash
+node interface/servidor.cjs
+```
+
+Acesse no navegador:
+
+http://127.0.0.1:4173
+
+### Validação
+
+| Cenário | Resultado |
+| :--- | :--- |
+| Comunicação com a API | Aprovado |
+| Listagem de eventos | Aprovado |
+| Compra de ingresso inteiro | Aprovado |
+| Compra de meia-entrada | Aprovado |
+| Compra de múltiplos ingressos | Aprovado |
+| Atualização da disponibilidade | Aprovado |
+| Bloqueio de poltrona ocupada | Aprovado |
+| Validação de poltronas repetidas | Aprovado |
+| Reserva tudo ou nada | Aprovado |
+| Teste de concorrência | Aprovado |
+| Falha de pagamento e rollback | Aprovado |
+| Sincronização do minimapa entre clientes | Aprovado |
+
+Os testes de compra, concorrência e rollback foram realizados
+durante o desenvolvimento da interface. A sincronização entre
+clientes foi validada na versão final com minimapa.
+
+### Testes automatizados
+
+Após a implementação da versão final da interface:
+
+- Pontuação dos testes originais: 16/16 (100%).
+- Verificação TypeScript: sem erros na configuração atual.
+
+A interface foi desenvolvida de forma independente, preservando
+os arquivos originais do sistema e os testes fornecidos pelo
+professor.
+
+Os eventos são fictícios, os pagamentos são simulados e nenhuma
+cobrança real é realizada.
+
+Responsável pela interface e sua integração: Gabriel.
