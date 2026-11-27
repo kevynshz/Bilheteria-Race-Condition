@@ -1,0 +1,1561 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sessão B — Em cartaz</title>
+        <style>
+            :root {
+                color-scheme: dark;
+                --bg: #17131d;
+                --panel: #241f2b;
+                --line: #4b4255;
+                --text: #f4eff9;
+                --muted: #c1b9cb;
+                --accent: #eae4f5;
+                --good: #a9dfbe;
+                --bad: #ffb4b8;
+                --serif: Georgia,'Times New Roman',serif;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                background: radial-gradient(ellipse at 83% 0,#251a34 0,transparent 43%),var(--bg);
+                color: var(--text);
+                font: 16px/1.5 system-ui,-apple-system,sans-serif;
+            }
+
+            main {
+                max-width: 1440px;
+                margin: auto;
+                padding: 34px 40px 56px;
+            }
+
+            h1,h2,h3,p {
+                margin: 0;
+            }
+
+            button,input {
+                font: inherit;
+            }
+
+            button {
+                cursor: pointer;
+            }
+
+            button:disabled {
+                cursor: not-allowed;
+                opacity: .5;
+            }
+
+            button:focus-visible,input:focus-visible,summary:focus-visible {
+                outline: 2px solid #d8bcff;
+                outline-offset: 4px;
+            }
+
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 28px;
+                padding: 10px 0 68px;
+            }
+
+            .eyebrow,.section-label,.micro {
+                font: 600 13px/1.5 ui-monospace,Consolas,monospace;
+                letter-spacing: .15em;
+                text-transform: uppercase;
+            }
+
+            .eyebrow {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .eyebrow:before {
+                content: '';
+                width: 37px;
+                height: 1px;
+                background: currentColor;
+            }
+
+            h1 {
+                font: 400 clamp(62px,10vw,142px)/1.04 var(--serif);
+                letter-spacing: -.075em;
+                margin: 20px 0 22px;
+            }
+
+            h1 em {
+                font-weight: 400;
+            }
+
+            .intro {
+                font-size: clamp(17px,2vw,26px);
+                color: var(--muted);
+            }
+
+            .stamp {
+                flex: none;
+                width: 172px;
+                aspect-ratio: 1;
+                border: 1px solid #a79bb5;
+                border-radius: 50%;
+                display: grid;
+                place-items: center;
+                transform: rotate(11deg);
+                padding: 8px;
+                color: #dcd3e6;
+            }
+
+            .stamp-inner {
+                width: 100%;
+                height: 100%;
+                border: 1px dashed #91839f;
+                border-radius: 50%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2px;
+            }
+
+            .stamp b {
+                font: italic 76px/.95 var(--serif);
+            }
+
+            .stamp span {
+                font: 600 12px ui-monospace,monospace;
+                letter-spacing: .19em;
+            }
+
+            .section-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .program {
+                border-top: 1px solid var(--line);
+                padding-top: 18px;
+            }
+
+            .section-label {
+                font-size: 17px;
+                color: var(--muted);
+            }
+
+            .events {
+                display: grid;
+                grid-template-columns: repeat(3,minmax(0,1fr));
+                gap: 20px;
+                margin: 23px 0 12px;
+            }
+
+            .ticket {
+                border: 1px solid var(--line);
+                border-radius: 20px;
+                overflow: hidden;
+                background: var(--panel);
+                min-width: 0;
+                transition: border-color .2s,transform .2s;
+            }
+
+            .ticket:hover {
+                transform: translateY(-3px);
+                border-color: #a99ab9;
+            }
+
+            .ticket.selected {
+                border-color: #b6a3ce;
+            }
+
+            .art {
+                position: relative;
+                aspect-ratio: 1.04;
+                overflow: hidden;
+                background: linear-gradient(140deg,#40304d,#17131d);
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+
+            /* Ajuste da imagem dos cartões de shows. */
+            .art img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .art:after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg,transparent 39%,#100e13aa 68%,#121014 100%);
+                pointer-events: none;
+            }
+
+            .artist {
+                position: relative;
+                z-index: 1;
+                padding: 0 8% 8%;
+                text-shadow: 0 2px 14px #0009;
+            }
+
+            .artist h3 {
+                font: 400 clamp(24px,3.9vw,58px)/1.05 var(--serif);
+                letter-spacing: -.055em;
+            }
+
+            .artist p {
+                font: italic clamp(15px,2.2vw,29px)/1.3 var(--serif);
+                margin-top: 8px;
+            }
+
+            .stub {
+                position: relative;
+                border-top: 1px dashed #8b8194;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                padding: 20px;
+            }
+
+            .stub:before,.stub:after {
+                content: '';
+                position: absolute;
+                top: -11px;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                background: var(--bg);
+            }
+
+            .stub:before {
+                left: -11px;
+            }
+
+            .stub:after {
+                right: -11px;
+            }
+
+            .stub small {
+                display: block;
+                color: var(--muted);
+            }
+
+            .stub strong {
+                display: block;
+                font-size: clamp(18px,2.1vw,27px);
+                line-height: 1.25;
+            }
+
+            .stub .availability {
+                font-size: 12px;
+                margin-top: 5px;
+            }
+
+            .primary,.secondary {
+                font-weight: 750;
+                border-radius: 8px;
+                padding: 12px 17px;
+                border: 1px solid transparent;
+            }
+
+            .primary {
+                background: var(--accent);
+                color: #211b2b;
+            }
+
+            .primary:hover:not(:disabled) {
+                background: white;
+            }
+
+            .secondary {
+                background: transparent;
+                color: var(--text);
+                border-color: var(--line);
+            }
+
+            .secondary:hover:not(:disabled) {
+                border-color: var(--muted);
+            }
+
+            .meta-line {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin: 12px 0 40px;
+            }
+
+            .muted,small,.note {
+                color: var(--muted);
+            }
+
+            .note {
+                font-size: 13px;
+                margin-top: 12px;
+            }
+
+            .status {
+                font-size: 13px;
+                color: var(--muted);
+            }
+
+            .status.ok {
+                color: var(--good);
+            }
+
+            .status.fail {
+                color: var(--bad);
+            }
+
+            .section-title {
+                font: 400 clamp(29px,4vw,46px)/1.15 var(--serif);
+                letter-spacing: -.04em;
+                margin-bottom: 12px;
+            }
+
+            .layout {
+                display: grid;
+                grid-template-columns: 1.2fr 1fr;
+                gap: 20px;
+                align-items: start;
+            }
+
+            .panel {
+                background: var(--panel);
+                border: 1px solid var(--line);
+                border-radius: 18px;
+                padding: 24px;
+                min-width: 0;
+            }
+
+            .panel h3 {
+                font-size: 17px;
+            }
+
+            .selected-name {
+                font: 400 25px var(--serif);
+                margin-bottom: 3px;
+            }
+
+            .fields {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 10px;
+            }
+
+            .fields label,.race label {
+                display: block;
+                font-size: 13px;
+                color: var(--muted);
+                font-weight: 600;
+            }
+
+            input:not([type=checkbox]) {
+                display: block;
+                width: 100%;
+                margin-top: 6px;
+                background: #17131d;
+                color: var(--text);
+                border: 1px solid var(--line);
+                padding: 10px;
+                border-radius: 7px;
+            }
+
+            input[type=checkbox] {
+                accent-color: #cab9e3;
+            }
+
+            .flags {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-top: 12px;
+            }
+
+            .flags label {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            .flags button {
+                margin-left: auto;
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+
+            fieldset {
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 13px;
+                margin: 15px 0;
+                min-width: 0;
+            }
+
+            legend {
+                padding: 0 6px;
+                font-weight: 650;
+            }
+
+            .actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 16px;
+            }
+
+            .checkout {
+                scroll-margin-top: 24px;
+            }
+
+            .checkout[hidden] {
+                display: none;
+            }
+
+            .summary {
+                margin: 14px 0;
+                padding: 14px 0;
+                border-top: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+            }
+
+            .sumrow {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                margin: 4px 0;
+            }
+
+            .sumrow.total {
+                font-size: 22px;
+                font-weight: 700;
+                margin-top: 10px;
+            }
+
+            .receipt {
+                margin-top: 14px;
+                padding: 15px;
+                border: 1px solid var(--line);
+                border-radius: 9px;
+                background: #19151f;
+                overflow-wrap: anywhere;
+            }
+
+            .receipt.success {
+                border-color: #76a78b;
+            }
+
+            .receipt.error {
+                border-color: #b77985;
+            }
+
+            .receipt h3 {
+                color: var(--text);
+            }
+
+            .receipt.success h3 {
+                color: var(--good);
+            }
+
+            .receipt.error h3 {
+                color: var(--bad);
+            }
+
+            .receipt ul {
+                padding-left: 18px;
+                margin: 10px 0;
+            }
+
+            .lab {
+                margin-top: 38px;
+                border-top: 1px solid var(--line);
+                padding-top: 18px;
+            }
+
+            .lab>summary {
+                cursor: pointer;
+                color: var(--muted);
+                font-weight: 650;
+                padding: 7px 0;
+            }
+
+            .lab .layout {
+                margin-top: 16px;
+            }
+
+            .result {
+                padding: 12px;
+                margin-top: 12px;
+                border-left: 3px solid #b3a1cb;
+                background: #19151f;
+                border-radius: 5px;
+                overflow-wrap: anywhere;
+            }
+
+            .result.success {
+                border-color: var(--good);
+            }
+
+            .result.error {
+                border-color: var(--bad);
+            }
+
+            .result pre {
+                font: 12px/1.5 ui-monospace,monospace;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+                color: var(--muted);
+                margin: 8px 0 0;
+            }
+
+            .empty {
+                padding: 12px;
+                color: var(--muted);
+            }
+
+            .race input {
+                max-width: 160px;
+            }
+
+            .race label {
+                margin-top: 14px;
+            }
+
+            footer {
+                margin-top: 35px;
+                color: var(--muted);
+                font-size: 12px;
+                border-top: 1px solid var(--line);
+                padding-top: 16px;
+            }
+
+            .sr-only {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                overflow: hidden;
+                clip: rect(0,0,0,0);
+                white-space: nowrap;
+                border: 0;
+            }
+
+            @media(max-width:900px) {
+
+                main {
+                    padding: 24px;
+                }
+
+                .events {
+                    gap: 12px;
+                }
+
+                .stub {
+                    padding: 14px;
+                    flex-wrap: wrap;
+                }
+
+                .stub .primary {
+                    padding: 9px 12px;
+                }
+
+                .stamp {
+                    width: 132px;
+                }
+
+                .stamp b {
+                    font-size: 54px;
+                }
+
+                .stamp span {
+                    font-size: 10px;
+                }
+            }
+
+            @media(max-width:640px) {
+
+                main {
+                    padding: 20px 16px 36px;
+                }
+
+                header {
+                    padding-bottom: 36px;
+                    gap: 12px;
+                }
+
+                .stamp {
+                    width: 82px;
+                    padding: 4px;
+                }
+
+                .stamp b {
+                    font-size: 36px;
+                }
+
+                .stamp span {
+                    font-size: 7px;
+                }
+
+                .eyebrow {
+                    font-size: 10px;
+                    gap: 8px;
+                }
+
+                .eyebrow:before {
+                    width: 16px;
+                }
+
+                h1 {
+                    font-size: clamp(49px,12vw,76px);
+                    margin: 12px 0;
+                }
+
+                .intro {
+                    font-size: 15px;
+                }
+
+                .events,.layout {
+                    grid-template-columns: 1fr;
+                }
+
+                .events {
+                    gap: 18px;
+                }
+
+                .art {
+                    aspect-ratio: 1.05;
+                }
+
+                .artist h3 {
+                    font-size: 44px;
+                }
+
+                .artist p {
+                    font-size: 24px;
+                }
+
+                .stub {
+                    padding: 17px;
+                }
+
+                .stub strong {
+                    font-size: 24px;
+                }
+
+                .panel {
+                    padding: 16px;
+                }
+
+                .fields {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .fields label:first-child {
+                    grid-column: 1/-1;
+                }
+
+                .section-label {
+                    font-size: 13px;
+                }
+            }
+
+            @media(prefers-reduced-motion:reduce) {
+
+                * {
+                    scroll-behavior: auto!important;
+                    transition: none!important;
+                }
+            }
+            /* Mapa de assentos — tema Sessão B. */
+            .seat-map {
+                margin: 22px 0;
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                overflow: hidden;
+                background: #19151f;
+            }
+
+            .map-header {
+                padding: 14px 18px;
+                background: #382b46;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .map-header h3 {
+                font: 400 22px var(--serif);
+            }
+
+            .map-status {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .map-body {
+                padding: 18px 14px;
+            }
+
+            .map-scroll {
+                overflow-x: auto;
+                padding: 4px;
+            }
+
+            .auditorium {
+                min-width: 300px;
+                max-width: 520px;
+                margin: 0 auto;
+            }
+
+            .seat-rows {
+                display: grid;
+                gap: 7px;
+            }
+
+            .seat-row {
+                display: grid;
+                grid-template-columns: 20px repeat(5, minmax(0, 1fr)) 14px repeat(5, minmax(0, 1fr)) 20px;
+                align-items: center;
+                justify-items: center;
+                gap: 5px;
+            }
+
+            .row-letter {
+                font: 600 11px ui-monospace, monospace;
+                color: var(--muted);
+            }
+
+            .seat {
+                display: grid;
+                place-items: center;
+                width: 100%;
+                max-width: 36px;
+                aspect-ratio: 1;
+                border: 1px solid transparent;
+                border-radius: 50%;
+                padding: 0;
+                font: 600 11px ui-monospace, monospace;
+                transition: background .15s, transform .15s;
+            }
+
+            .seat.free, .seat-key.free {
+                background: #b8a6dc;
+                color: #20162d;
+            }
+
+            .seat.chosen, .seat-key.chosen {
+                background: #e8c77d;
+                color: #302313;
+            }
+
+            .seat.taken, .seat-key.taken {
+                background: #514758;
+                border: 1px solid #796b87;
+                color: #e2d9eb;
+            }
+
+            .seat.unknown, .seat-key.unknown {
+                background: transparent;
+                border: 1px dashed #9c8bad;
+                color: var(--muted);
+            }
+
+            .seat:disabled {
+                opacity: 1;
+                cursor: not-allowed;
+            }
+
+            .seat:not(:disabled):hover {
+                transform: scale(1.1);
+                border-color: #fff;
+            }
+
+            .seat-number.hidden-number {
+                visibility: hidden;
+            }
+
+            .stage {
+                margin: 24px 16px 12px;
+                padding: 7px 12px;
+                text-align: center;
+                background: linear-gradient(90deg, #44364e, #776287, #44364e);
+                color: #fff;
+                border-top: 1px solid #b4a2c9;
+                border-radius: 50% 50% 5px 5px / 32% 32% 5px 5px;
+                font: 600 11px ui-monospace, monospace;
+                letter-spacing: .25em;
+            }
+
+            .map-options, .map-legend {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px 16px;
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .map-options {
+                justify-content: space-between;
+                padding: 0 4px 10px;
+            }
+
+            .map-options label, .map-legend span {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .map-legend {
+                border-top: 1px solid var(--line);
+                padding: 12px 0 0;
+            }
+
+            .map-legend [hidden] {
+                display: none;
+            }
+
+            .seat-key {
+                width: 13px;
+                height: 13px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+
+            .map-note {
+                margin-top: 10px;
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            @media (max-width: 640px) {
+                .map-body {
+                    padding: 12px 8px;
+                }
+
+                .seat-row {
+                    gap: 3px;
+                    grid-template-columns: 16px repeat(5, minmax(0, 1fr)) 8px repeat(5, minmax(0, 1fr)) 16px;
+                }
+
+                .seat {
+                    font-size: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <header>
+                <div>
+                    <p class="eyebrow">Bilheteria independente</p>
+                    <h1>Em <em>cartaz.</em></h1>
+                    <p class="intro">Três shows, três atmosferas. Escolha a sua sessão.</p>
+                </div>
+                <div class="stamp" aria-label="Sessão B ao vivo">
+                    <div class="stamp-inner">
+                        <span>SESSÃO</span>
+                        <b>B</b>
+                        <span>AO VIVO</span>
+                    </div>
+                </div>
+            </header>
+            <section class="program" aria-label="Programação">
+                <div class="section-head">
+                    <h2 class="section-label">Programação</h2>
+                    <span id="count" class="section-label">03 sessões</span>
+                </div>
+                <div id="events" class="events">
+                    <p class="empty">Carregando sessões...</p>
+                </div>
+                <div class="meta-line">
+                    <span class="note">Programação fictícia · projeto acadêmico · nenhuma cobrança real.</span>
+                    <div class="section-head">
+                        <span id="connection" class="status" role="status">Conectando à API...</span>
+                        <button id="refresh" class="secondary" type="button">Atualizar</button>
+                    </div>
+                </div>
+            </section>
+            <section id="checkout" class="checkout" hidden>
+                <h2 class="section-title">Garanta seu ingresso.</h2>
+                <div class="layout">
+                    <section class="panel">
+                        <p class="micro muted">Sua sessão</p>
+                        <p id="selected" class="selected-name">Selecione um show.</p>
+                        <p id="selectedDetails" class="muted"></p>
+                        <section class="seat-map" aria-labelledby="mapTitle">
+                            <div class="map-header">
+                                <h3 id="mapTitle">Escolha seus assentos</h3>
+                                <span id="mapStatus" class="map-status" role="status">Carregando mapa...</span>
+                            </div>
+                            <div class="map-body">
+                                <div class="map-scroll">
+                                    <div class="auditorium">
+                                        <div id="seatRows" class="seat-rows" aria-label="Mapa de poltronas"></div>
+                                        <div class="stage">PALCO</div>
+                                    </div>
+                                </div>
+                                <div class="map-options">
+                                    <span id="mapSelection">Nenhuma poltrona selecionada</span>
+                                    <label>
+                                        <input id="seatNumbers" type="checkbox" checked>
+                                        Exibir números
+                                    </label>
+                                </div>
+                                <div class="map-legend" aria-label="Legenda">
+                                    <span><i class="seat-key free" aria-hidden="true"></i> Livre</span>
+                                    <span><i class="seat-key chosen" aria-hidden="true"></i> Selecionado</span>
+                                    <span><i class="seat-key taken" aria-hidden="true"></i> Indisponível</span>
+                                    <span id="unknownLegend" hidden><i class="seat-key unknown" aria-hidden="true"></i> Não confirmado</span>
+                                </div>
+                                <p id="mapNote" class="map-note">Selecione uma poltrona para preencher o ingresso. As poltronas são confirmadas pela API.</p>
+                            </div>
+                        </section>
+                        <form id="purchase">
+                            <div id="people"></div>
+                            <div class="actions">
+                                <button type="button" class="secondary" id="add">+ Adicionar pessoa</button>
+                                <button type="submit" class="primary" id="buy">Confirmar reserva</button>
+                            </div>
+                        </form>
+                        <p class="note">Meia-entrada para estudantes, PcD e pessoas com 60 anos ou mais. A disponibilidade da poltrona é confirmada pelo servidor no momento da reserva.</p>
+                    </section>
+                    <section class="panel">
+                        <p class="micro muted">Resumo do pedido</p>
+                        <div id="estimate" class="summary"></div>
+                        <p class="note">Estimativa antes da confirmação. O valor definitivo e o comprovante são emitidos pela API.</p>
+                        <div id="receipt" aria-live="polite"></div>
+                    </section>
+                </div>
+            </section>
+            <details class="lab" id="lab">
+                <summary>Área de testes da API · laboratório de concorrência</summary>
+                <div class="layout">
+                    <section class="panel race">
+                        <h3>Disputa de poltrona</h3>
+                        <p class="note">Envia dois pedidos simultâneos para o evento selecionado. Escolha primeiro um cartão da programação. O teste altera o estoque local.</p>
+                        <p class="note" id="raceEvent"></p>
+                        <form id="race">
+                            <label for="raceSeat">Número da poltrona</label>
+                            <input id="raceSeat" type="number" min="1" step="1" value="1" required>
+                            <div class="actions">
+                                <button id="raceButton" class="primary" type="submit">Disputar poltrona</button>
+                            </div>
+                        </form>
+                        <p class="note">Um pedido pode retornar 201 e o outro 409; o pagamento simulado também pode falhar (502).</p>
+                    </section>
+                    <section class="panel">
+                        <div class="section-head">
+                            <h3>Respostas reais da API</h3>
+                            <button id="clear" class="secondary" type="button">Limpar</button>
+                        </div>
+                        <div id="results" role="log" aria-live="polite">
+                            <p class="empty">Nenhuma solicitação enviada.</p>
+                        </div>
+                    </section>
+                </div>
+            </details>
+            <footer>Sessão B · Bilheteria concorrente · Demonstração acadêmica sem vínculo com os artistas. Os shows e datas são fictícios.</footer>
+        </main>
+        <template id="personTemplate">
+            <fieldset>
+                <legend>Ingresso</legend>
+                <div class="fields">
+                    <label>Nome<input name="nome" type="text" required maxlength="100" placeholder="Nome do participante"></label>
+                    <label>Idade<input name="idade" type="number" min="0" step="1" value="20" required></label>
+                    <label>Poltrona<input name="poltrona" type="number" min="1" step="1" value="1" required></label>
+                </div>
+                <div class="flags">
+                    <label><input name="estudante" type="checkbox">Estudante</label>
+                    <label><input name="pcd" type="checkbox">PcD</label>
+                    <button class="secondary remove" type="button">Remover</button>
+                </div>
+            </fieldset>
+        </template>
+        <script>
+            const $ = id => document.getElementById(id);
+
+            const money = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+            // Configuração dos shows e das imagens em interface/assets.
+            const shows = {
+                1: {
+                    nome: 'Lana Del Rey',
+                    titulo: 'Blue Velvet Night',
+                    data: '11 dez · 20h',
+                    arte: 'lana'
+                },
+                2: {
+                    nome: 'Adele',
+                    titulo: 'An Evening with Adele',
+                    data: '12 dez · 21h',
+                    arte: 'adele'
+                },
+                3: {
+                    nome: 'Taylor Swift',
+                    titulo: 'Midnight Stories',
+                    data: '13 dez · 20h30',
+                    arte: 'taylor'
+                }
+            };
+
+            let eventos = [];
+            let selecionado = null;
+            let ocupado = false;
+            let conectado = false;
+
+            const eventoAtual = () => eventos.find(e => e.id === selecionado);
+
+            const show = e => shows[e.id] || {
+                nome: e.nome,
+                titulo: 'Sessão ao vivo',
+                data: 'Data a definir'
+            };
+
+            const node = (tag, cls, txt) => {
+                const n = document.createElement(tag);
+                if (cls) {
+                    n.className = cls;
+                }
+                if (txt !== undefined) {
+                    n.textContent = txt;
+                }
+                return n;
+            };
+
+            // O mapa é consultado no backend; não depende de localStorage.
+            const ASSENTOS_POR_FILEIRA = 10;
+            let mapaDisponivel = false;
+            let versaoConsulta = 0;
+            let consultaEmAndamento = false;
+            let ultimaRenderizacaoMapa = '';
+
+            function camposPoltrona() {
+                return [...$('people').querySelectorAll('[name=poltrona]')];
+            }
+
+            function poltronasIndisponiveis(evento) {
+                return new Set(evento?.indisponiveis || []);
+            }
+
+            function escolherPoltrona(numero) {
+                const evento = eventoAtual();
+
+                if (!evento || ocupado || !mapaDisponivel || poltronasIndisponiveis(evento).has(numero)) {
+                    return;
+                }
+
+                let campos = camposPoltrona();
+                const existente = campos.find(campo => Number(campo.value) === numero);
+
+                if (existente) {
+                    existente.value = '';
+                } else {
+                    let campo = campos.find(campo => !campo.value);
+
+                    if (!campo) {
+                        adicionar();
+                        campos = camposPoltrona();
+                        campo = campos.at(-1);
+                    }
+
+                    campo.value = numero;
+                }
+
+                atualizaSelecao();
+            }
+
+            function renderizarMinimapa() {
+                const area = $('seatRows');
+                const evento = eventoAtual();
+                const numerosVisiveis = $('seatNumbers').checked;
+                const indisponiveis = poltronasIndisponiveis(evento);
+                const selecionadas = new Set(
+                    camposPoltrona()
+                        .map(campo => Number(campo.value))
+                        .filter(numero => Number.isInteger(numero) && numero > 0 && numero <= (evento?.capacidade || 0))
+                );
+                const livresSelecionadas = mapaDisponivel
+                    ? [...selecionadas].filter(numero => !indisponiveis.has(numero))
+                    : [];
+                const chave = JSON.stringify([
+                    evento?.id, evento?.capacidade, evento?.disponivel,
+                    [...indisponiveis], [...selecionadas], numerosVisiveis,
+                    mapaDisponivel, ocupado, conectado
+                ]);
+
+                if (chave === ultimaRenderizacaoMapa) {
+                    return;
+                }
+
+                ultimaRenderizacaoMapa = chave;
+                const foco = area.contains(document.activeElement)
+                    ? document.activeElement.dataset.poltrona
+                    : null;
+                area.replaceChildren();
+                $('unknownLegend').hidden = mapaDisponivel;
+
+                if (!evento) {
+                    $('mapStatus').textContent = 'Mapa indisponível';
+                    $('mapSelection').textContent = 'Nenhuma poltrona selecionada';
+                    $('mapNote').textContent = 'Conecte o backend para visualizar os assentos.';
+                    return;
+                }
+
+                $('mapStatus').textContent = `${evento.disponivel} de ${evento.capacidade} livres`;
+                $('mapSelection').textContent = livresSelecionadas.length
+                    ? `Selecionadas: ${livresSelecionadas.sort((a, b) => a - b).join(', ')}`
+                    : 'Nenhuma poltrona selecionada';
+                $('mapNote').textContent = mapaDisponivel
+                    ? 'Clique para selecionar ou desmarcar um assento. A seleção não bloqueia lugares antes da confirmação. Atualização a cada 2 segundos; lugares em pagamento também ficam indisponíveis.'
+                    : 'O backend atual não fornece os números dos assentos. Inicie com npx tsx interface/backend.ts para ativar o mapa. A reserva manual continua disponível.';
+
+                const totalFileiras = Math.ceil(evento.capacidade / ASSENTOS_POR_FILEIRA);
+
+                for (let fileira = 0; fileira < totalFileiras; fileira++) {
+                    const linha = node('div', 'seat-row');
+                    const letra = String.fromCharCode(65 + totalFileiras - fileira - 1);
+                    linha.append(node('span', 'row-letter', letra));
+
+                    for (let coluna = 0; coluna < ASSENTOS_POR_FILEIRA; coluna++) {
+                        if (coluna === 5) {
+                            const corredor = node('span');
+                            corredor.setAttribute('aria-hidden', 'true');
+                            linha.append(corredor);
+                        }
+
+                        const numero = fileira * ASSENTOS_POR_FILEIRA + coluna + 1;
+
+                        if (numero > evento.capacidade) {
+                            linha.append(node('span'));
+                            continue;
+                        }
+
+                        const classe = !mapaDisponivel
+                            ? 'unknown'
+                            : indisponiveis.has(numero)
+                                ? 'taken'
+                                : selecionadas.has(numero)
+                                    ? 'chosen'
+                                    : 'free';
+                        const descricao = {
+                            unknown: 'disponibilidade não confirmada',
+                            taken: 'indisponível',
+                            chosen: 'selecionada',
+                            free: 'livre'
+                        }[classe];
+                        const botao = node('button', `seat ${classe}`);
+                        botao.type = 'button';
+                        botao.dataset.poltrona = String(numero);
+                        botao.disabled = ocupado || classe === 'taken' || classe === 'unknown';
+                        botao.title = `Poltrona ${numero} · ${descricao}`;
+                        botao.setAttribute('aria-label', botao.title);
+                        botao.setAttribute('aria-pressed', String(classe === 'chosen'));
+                        botao.append(node('span', 'seat-number' + (numerosVisiveis ? '' : ' hidden-number'), String(numero)));
+                        botao.addEventListener('click', () => escolherPoltrona(numero));
+                        linha.append(botao);
+                    }
+
+                    linha.append(node('span', 'row-letter', letra));
+                    area.append(linha);
+                }
+
+                if (foco) {
+                    area.querySelector(`[data-poltrona="${foco}"]:not(:disabled)`)?.focus({ preventScroll: true });
+                }
+            }
+
+            function ingressos() {
+                return [...$('people').querySelectorAll('fieldset')].map(f => {
+                    const get = n => f.querySelector(`[name=${n}]`);
+                    return {
+                        nome: get('nome').value.trim(),
+                        idade: Number(get('idade').value),
+                        estudante: get('estudante').checked,
+                        pcd: get('pcd').checked,
+                        poltrona: Number(get('poltrona').value)
+                    };
+                });
+            }
+
+            function estimativa() {
+                const e = eventoAtual();
+                if (!e) {
+                    $('estimate').textContent = 'Selecione um show.';
+                    return;
+                }
+                const pessoas = ingressos();
+                const subtotal = pessoas.reduce(
+                    (s, p) => s + (p.estudante || p.pcd || p.idade >= 60
+                        ? Math.round(e.preco * 50) / 100
+                        : e.preco),
+                    0
+                );
+                const total = Math.round(subtotal * 110) / 100;
+                const rows = [
+                    ['Ingressos', String(pessoas.length)],
+                    ['Subtotal', money.format(subtotal)],
+                    ['Taxa de serviço (10%)', money.format(total - subtotal)],
+                    ['Total estimado', money.format(total)]
+                ];
+                $('estimate').replaceChildren(...rows.map(([k, v], i) => {
+                    const r = node('div', 'sumrow' + (i === 3 ? ' total' : ''));
+                    r.append(node('span', '', k), node('strong', '', v));
+                    return r;
+                }));
+            }
+
+            function syncButtons() {
+                $('buy').disabled = ocupado || !conectado || !eventoAtual();
+                $('raceButton').disabled = $('buy').disabled;
+                $('refresh').disabled = ocupado;
+                $('add').disabled = ocupado;
+                for (const f of $('people').querySelectorAll('.remove')) {
+                    f.disabled = ocupado || $('people').children.length === 1;
+                }
+            }
+
+            function atualizaSelecao() {
+                const e = eventoAtual();
+                const s = e && show(e);
+                $('selected').textContent = e ? `${s.nome} — ${s.titulo}` : 'Selecione um show.';
+                $('selectedDetails').textContent = e ? `${s.data} · ${e.disponivel} de ${e.capacidade} lugares livres` : '';
+                $('raceEvent').textContent = e ? `${s.nome} · ${e.disponivel} lugares livres` : 'Nenhum evento selecionado.';
+                for (const input of document.querySelectorAll('[name=poltrona],#raceSeat')) {
+                    if (e) {
+                        input.max = e.capacidade;
+                    } else {
+                        input.removeAttribute('max');
+                    }
+                }
+                syncButtons();
+                estimativa();
+                renderizarMinimapa();
+            }
+
+            // Montagem dos cartões e carregamento das imagens.
+            function renderEventos() {
+                const area = $('events');
+                area.replaceChildren();
+                $('count').textContent = `${String(eventos.length).padStart(2, '0')} sessões`;
+                if (!eventos.length) {
+                    area.append(node('p', 'empty', 'Nenhum evento disponível. Confira o servidor e atualize.'));
+                }
+                for (const e of eventos) {
+                    const s = show(e);
+                    const card = node('article', 'ticket' + (e.id === selecionado ? ' selected' : ''));
+                    const art = node('div', 'art');
+                    if (s.arte) {
+                        const img = node('img');
+                        img.src = `/assets/${s.arte}.webp`;
+                        img.alt = '';
+                        art.append(img, node('span', 'sr-only', s.data));
+                    } else {
+                        art.append(node('span', 'sr-only', s.data));
+                    }
+                    const artist = node('div', 'artist');
+                    artist.append(node('h3', '', s.nome), node('p', '', s.titulo));
+                    art.append(artist);
+                    const stub = node('div', 'stub');
+                    const price = node('div');
+                    price.append(
+                        node('small', '', 'Entrada geral'),
+                        node('strong', '', money.format(e.preco)),
+                        node('small', 'availability', `${e.disponivel}/${e.capacidade} lugares livres`)
+                    );
+                    const b = node('button', 'primary', 'Reservar');
+                    b.type = 'button';
+                    b.disabled = ocupado || e.disponivel === 0;
+                    b.setAttribute('aria-label', `Reservar ingresso para ${s.nome}`);
+                    b.addEventListener('click', () => {
+                        if (selecionado !== e.id) {
+                            camposPoltrona().forEach(campo => campo.value = '');
+                        }
+                        selecionado = e.id;
+                        $('checkout').hidden = false;
+                        $('receipt').replaceChildren();
+                        renderEventos();
+                        $('checkout').scrollIntoView({
+                            block: 'start'
+                        });
+                        $('people').querySelector('[name=nome]')?.focus({
+                            preventScroll: true
+                        });
+                    });
+                    stub.append(price, b);
+                    card.append(art, stub);
+                    area.append(card);
+                }
+                atualizaSelecao();
+            }
+
+            async function api(rota, body) {
+                const ini = performance.now();
+                try {
+                    const r = await fetch(rota, body === undefined ? {} : {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+                    const raw = await r.text();
+                    let data;
+                    try {
+                        data = JSON.parse(raw);
+                    } catch {
+                        data = {
+                            mensagem: raw
+                        };
+                    }
+                    return {
+                        status: r.status,
+                        data,
+                        ms: Math.round(performance.now() - ini)
+                    };
+                } catch {
+                    return {
+                        status: 0,
+                        data: {
+                            mensagem: 'Não foi possível conectar à interface local.'
+                        },
+                        ms: Math.round(performance.now() - ini)
+                    };
+                }
+            }
+
+            async function carregar() {
+                const versao = ++versaoConsulta;
+                consultaEmAndamento = true;
+
+                try {
+                    let r = await api('/mapa');
+                    let temMapa = r.status === 200 && Array.isArray(r.data) && r.data.every(evento =>
+                        Array.isArray(evento.indisponiveis) &&
+                        evento.indisponiveis.length === evento.capacidade - evento.disponivel
+                    );
+
+                    // Compatibilidade com o npm start original: não inventa assentos livres.
+                    if (!temMapa && r.status === 404) {
+                        r = await api('/eventos');
+                    }
+
+                    if (versao !== versaoConsulta) {
+                        return;
+                    }
+
+                    const antes = JSON.stringify(eventos);
+                    const conexaoAnterior = conectado;
+                    const mapaAnterior = mapaDisponivel;
+                    conectado = r.status === 200 && Array.isArray(r.data);
+                    mapaDisponivel = conectado && temMapa;
+                    $('connection').className = 'status ' + (conectado ? 'ok' : 'fail');
+                    $('connection').textContent = conectado
+                        ? '● API conectada'
+                        : `● API indisponível (${r.status || 'sem conexão'})`;
+
+                    if (conectado) {
+                        eventos = r.data;
+
+                        if (!eventoAtual()) {
+                            selecionado = eventos[0]?.id ?? null;
+                        }
+                    } else {
+                        eventos = [];
+                        selecionado = null;
+                    }
+
+                    if (antes !== JSON.stringify(eventos) || conexaoAnterior !== conectado || mapaAnterior !== mapaDisponivel) {
+                        renderEventos();
+                    } else {
+                        atualizaSelecao();
+                    }
+                } finally {
+                    if (versao === versaoConsulta) {
+                        consultaEmAndamento = false;
+                    }
+                }
+            }
+
+            function atualizarPessoas() {
+                [...$('people').querySelectorAll('fieldset')].forEach((f, i) => {
+                    f.querySelector('legend').textContent = `Ingresso ${i + 1}`;
+                });
+                atualizaSelecao();
+            }
+
+            function adicionar() {
+                const f = $('personTemplate').content.firstElementChild.cloneNode(true);
+                f.querySelector('[name=poltrona]').value = '';
+                f.querySelector('.remove').addEventListener('click', () => {
+                    if (!ocupado) {
+                        f.remove();
+                        atualizarPessoas();
+                    }
+                });
+                $('people').append(f);
+                atualizarPessoas();
+            }
+
+            function resultado(titulo, r) {
+                const area = $('results');
+                area.querySelector('.empty')?.remove();
+                const box = node('article', 'result ' + (r.status === 201 ? 'success' : 'error'));
+                box.append(
+                    node('h3', '', `${titulo} · ${r.status ? `HTTP ${r.status}` : 'Falha de conexão'} · ${r.ms} ms`),
+                    node('p', '', r.status === 201
+                        ? `Reserva ${r.data?.reservaId ?? 'confirmada'} · Total: ${money.format(r.data.total)}`
+                        : r.data?.mensagem || 'Solicitação recusada.'),
+                    node('pre', '', JSON.stringify(r.data, null, 2))
+                );
+                area.prepend(box);
+            }
+
+            function comprovante(r, e) {
+                const ok = r.status === 201;
+                const box = node('article', 'receipt ' + (ok ? 'success' : 'error'));
+                box.append(
+                    node('h3', '', ok ? 'Reserva confirmada!' : 'Não foi possível reservar'),
+                    node('p', 'muted', `HTTP ${r.status || '—'} · ${r.ms} ms`)
+                );
+                if (ok) {
+                    box.append(node('p', '', `${show(e).nome} · Reserva #${r.data.reservaId}`));
+                    const ul = node('ul');
+                    for (const i of r.data.ingressos || []) {
+                        ul.append(node('li', '', `${i.nome} · Poltrona ${i.poltrona} · ${i.tipo} · ${money.format(i.valor)}`));
+                    }
+                    box.append(ul, node('strong', '', `Total pago (simulado): ${money.format(r.data.total)}`));
+                } else {
+                    box.append(node('p', '', r.data?.mensagem || 'Solicitação recusada.'));
+                }
+                $('receipt').replaceChildren(box);
+            }
+
+            async function executar(fn) {
+                if (ocupado) {
+                    return;
+                }
+                ocupado = true;
+                ++versaoConsulta;
+                consultaEmAndamento = false;
+                renderEventos();
+                try {
+                    await fn();
+                    await carregar();
+                } finally {
+                    ocupado = false;
+                    renderEventos();
+                }
+            }
+
+            $('purchase').addEventListener('submit', e => {
+                e.preventDefault();
+                const ev = eventoAtual();
+                if (!ev) {
+                    return;
+                }
+                const pessoas = ingressos();
+                executar(async () => {
+                    const r = await api('/reservas', {
+                        eventoId: ev.id,
+                        ingressos: pessoas
+                    });
+                    resultado('Reserva', r);
+                    comprovante(r, ev);
+
+                    if (r.status === 201) {
+                        $('people').replaceChildren();
+                        adicionar();
+                    }
+                });
+            });
+
+            $('race').addEventListener('submit', e => {
+                e.preventDefault();
+                const eventoId = selecionado;
+                const poltrona = Number($('raceSeat').value);
+                const pedido = nome => ({
+                    eventoId,
+                    ingressos: [
+                        {
+                            nome,
+                            idade: 25,
+                            estudante: false,
+                            pcd: false,
+                            poltrona
+                        }
+                    ]
+                });
+                executar(async () => {
+                    const [a, b] = await Promise.all([
+                        api('/reservas', pedido('Cliente A')),
+                        api('/reservas', pedido('Cliente B'))
+                    ]);
+                    resultado('Cliente A', a);
+                    resultado('Cliente B', b);
+                    const vendas = [a, b].filter(r => r.status === 201).length;
+                    const verificaveis = [a, b].every(r => [201, 409, 502].includes(r.status));
+                    $('results').prepend(
+                        node('p', 'result', vendas > 1
+                            ? 'ALERTA: duas vendas para a mesma poltrona!'
+                            : !verificaveis
+                                ? `Resultado inconclusivo: ${vendas} venda(s) confirmada(s); confira as respostas.`
+                                : `Resultado: ${vendas} venda(s) para a poltrona ${poltrona}. ${vendas === 1 ? 'Não houve venda duplicada.' : 'Não houve venda; consulte os erros.'}`
+                        )
+                    );
+                });
+            });
+
+            $('people').addEventListener('input', () => {
+                estimativa();
+                renderizarMinimapa();
+            });
+
+            $('seatNumbers').addEventListener('change', renderizarMinimapa);
+
+            $('people').addEventListener('change', estimativa);
+
+            $('add').addEventListener('click', adicionar);
+
+            $('refresh').addEventListener('click', () => executar(async () => { }));
+
+            $('clear').addEventListener('click', () => $('results').replaceChildren(node('p', 'empty', 'Nenhuma solicitação enviada.')));
+            adicionar();
+            carregar();
+
+            // Sincroniza compras de outras abas e chamadas diretas da API.
+            setInterval(() => {
+                if (!ocupado && !consultaEmAndamento) {
+                    carregar();
+                }
+            }, 2000);
+        </script>
+    </body>
+</html>
